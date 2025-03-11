@@ -16,19 +16,29 @@ typedef struct {
 
 //add task
 int main() {
+	int task_counter = 0;
+
 	//take in user input
 	printf("Input a task: ");
 	char task_input[TASK_LENGTH]; //buffer for holding task
+	printf("%p\n", &task_input);
 	fgets(task_input, TASK_LENGTH, stdin); //get user input 
 
 	//put user input in tasks.txt file
-	int task_counter = 0;
 	FILE *fp;
+	char read_lines[TASK_LENGTH];
+	printf("%p\n", &read_lines);
+	//SEGMENTATION FAULT BECAUSE IM TRYING TO READ FROM
+	//TASKS.TXT BUT IT DOESN'T YET EXIST!!!!!
+	fp = fopen("tasks.txt", "r");
+	while (fgets(read_lines, TASK_LENGTH, fp) != NULL)
+		printf("Task counter: %d\n", task_counter++);
+
 	if (task_counter == 0)
 		fp = fopen("tasks.txt", "w");
 	else
 		fp = fopen("tasks.txt", "a");
 	fputs(task_input, fp);
-	task_counter +=1;
+	printf("The task Counter is now: %d\n", task_counter);
 	fclose(fp);
 }
