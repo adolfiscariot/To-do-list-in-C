@@ -2,43 +2,50 @@
 
 //Create a to do list where user can view, add and delete tasks. Tasks should be stored in a file called tasks.txt
 
+#include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
+
+#define TASK_LENGTH 100
 
 //the task struct
 typedef struct {
 	char *description;
-	int completed;
 } Task;
-
-//define task length
-#define TASK_LENGTH 100
 
 
 //add task
 int main() {
-	int task_counter = 0;
+	//create new task
+	Task task;
 
 	//take in user input
 	printf("Input a task: ");
-	char task_input[TASK_LENGTH]; //buffer for holding task
-	printf("%p\n", &task_input);
-	fgets(task_input, TASK_LENGTH, stdin); //get user input 
+	char task_input[TASK_LENGTH];
+	fgets(task_input, TASK_LENGTH, stdin); 
 
-	//put user input in tasks.txt file
-	FILE *fp;
-	char read_lines[TASK_LENGTH];
-	printf("%p\n", &read_lines);
-	//SEGMENTATION FAULT BECAUSE IM TRYING TO READ FROM
-	//TASKS.TXT BUT IT DOESN'T YET EXIST!!!!!
-	fp = fopen("tasks.txt", "r");
-	while (fgets(read_lines, TASK_LENGTH, fp) != NULL)
-		printf("Task counter: %d\n", task_counter++);
+	//remove new line from string input
+	task_input[strcspn(task_input, "\n")] = '\0';
 
-	if (task_counter == 0)
-		fp = fopen("tasks.txt", "w");
-	else
-		fp = fopen("tasks.txt", "a");
-	fputs(task_input, fp);
-	printf("The task Counter is now: %d\n", task_counter);
+	//copy task_input into task.description
+	task.description = calloc(1, TASK_LENGTH);
+	if(task.description==NULL)
+		perror("Mem alloc failed");	
+       	strcpy(task.description, task_input);
+
+	//open file
+	FILE *fp = fopen("tasks.txt", "a");
+	if (fp==NULL){
+		perror("Issue opening file");
+		return -1;
+	}
+
+	//put input in file
+	fputs(task.description, fp);
+	fputs("\n", fp);
+	printf("The task has been added\n");
+
+	//free the memory and close the file
+	free(task.description);	
 	fclose(fp);
 }
