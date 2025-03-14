@@ -7,15 +7,17 @@
 #include <stdlib.h>
 
 #define TASK_LENGTH 100
+#define TOTAL_TASKS 10
 
 //the task struct
 typedef struct {
 	char *description;
 } Task;
 
+int task_counter = 0;
 
 //add task
-int main() {
+void add_task() {
 	//create new task
 	Task task;
 
@@ -37,7 +39,7 @@ int main() {
 	FILE *fp = fopen("tasks.txt", "a");
 	if (fp==NULL){
 		perror("Issue opening file");
-		return -1;
+		return;
 	}
 
 	//put input in file
@@ -48,4 +50,38 @@ int main() {
 	//free the memory and close the file
 	free(task.description);	
 	fclose(fp);
+}
+void show_tasks(){
+	//open file
+	FILE *fp = fopen("tasks.txt", "r");
+	//if fille is null throw error
+	if(fp == NULL){
+		perror("Couldn't open file");
+		return;
+	}
+	//create buffer to store fetched tasks
+	char *fetched_tasks = calloc(TOTAL_TASKS, TASK_LENGTH);
+	//while fgets != NULL print tasks
+	while ((fgets(fetched_tasks, TASK_LENGTH, fp)) != NULL)
+		printf("%d: %s\n", ++task_counter, fetched_tasks);
+	//free memory and close file
+	free(fetched_tasks);
+	fclose(fp);
+}
+int main(void){
+	//tell user welcome to task manager and select a choice
+	printf("WELCOME TO THE TASK MANAGER!\n");
+	printf("Please select a choice.Press...\n");
+	printf("1 to show tasks\n2 to add a task\n");
+	//create buffer to store user input
+	char user_input[4];
+	//get user input and store it in buffer
+	fgets(user_input, sizeof(int), stdin);
+	//convert string user input to an int
+	int converted_user_input = atoi(user_input);
+	//switch case for which choice they select
+	switch(converted_user_input){
+		case 1: show_tasks(); break;
+		case 2: add_task(); break;
+	}
 }
