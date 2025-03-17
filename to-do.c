@@ -12,6 +12,7 @@
 //the task struct
 typedef struct {
 	char *description;
+	char *completed;
 } Task;
 
 int task_counter = 0;
@@ -26,6 +27,11 @@ void add_task() {
 	char task_input[TASK_LENGTH];
 	fgets(task_input, TASK_LENGTH, stdin); 
 
+	//user input for task completion
+	printf("Is it completed? 1 for yes, 0 for no...");
+	char completed_input;
+	fgets(&completed_input, sizeof(int), stdin);
+
 	//remove new line from string input
 	task_input[strcspn(task_input, "\n")] = '\0';
 
@@ -34,6 +40,12 @@ void add_task() {
 	if(task.description==NULL)
 		perror("Mem alloc failed");	
        	strcpy(task.description, task_input);
+	
+	//make task.completed yes or no
+	if (completed_input == 0)
+		task.completed = "No";
+	else if (completed_input == 1)
+		task.completed = "Yes";
 
 	//open file
 	FILE *fp = fopen("tasks.txt", "a");
@@ -44,6 +56,8 @@ void add_task() {
 
 	//put input in file
 	fputs(task.description, fp);
+	fputs("Completed? ", fp);
+	fputs(task.completed, fp);
 	fputs("\n", fp);
 	printf("The task has been added\n");
 
@@ -67,7 +81,7 @@ void show_tasks(){
 	//while fgets != NULL print tasks
 	printf("-----TASK MANAGER-----\n");
 	while ((fgets(fetched_tasks, TASK_LENGTH, fp)) != NULL)
-		printf("%d: %s\n", ++task_counter, fetched_tasks);
+		printf("%d: %s", ++task_counter, fetched_tasks);
 
 	//free memory and close file
 	free(fetched_tasks);
@@ -126,7 +140,7 @@ int main(void){
 	//tell user welcome to task manager and select a choice
 	printf("WELCOME TO THE TASK MANAGER!\n");
 	printf("Please select a choice.Press...\n");
-	printf("1 to show tasks\n2 to add a task\n3 to delete task\n");
+	printf("1 to show tasks\n2 to add a task\n3 to delete task\n\n");
 
 	//create buffer to store user input
 	char user_input[4];
