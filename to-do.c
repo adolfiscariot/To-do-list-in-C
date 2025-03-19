@@ -17,7 +17,7 @@ typedef struct {
 
 int task_counter = 0;
 
-//add task
+//function to add a task
 void add_task() {
 	//create new task
 	Task task;
@@ -27,20 +27,25 @@ void add_task() {
 	char task_input[TASK_LENGTH];
 	fgets(task_input, TASK_LENGTH, stdin); 
 
-	//user input for task completion
-	printf("Is it completed? 1 for yes, 0 for no...");
-	char completed_input;
-	fgets(&completed_input, sizeof(int), stdin);
-
 	//remove new line from string input
 	task_input[strcspn(task_input, "\n")] = '\0';
 
 	//copy task_input into task.description
 	task.description = calloc(1, TASK_LENGTH);
 	if(task.description==NULL)
-		perror("Mem alloc failed");	
+		perror("Task.Description memory alloc failed");	
        	strcpy(task.description, task_input);
 	
+	//user input for task completion
+	printf("Is it completed? 1 for yes, 0 for no...");
+	int completed_input;
+	scanf("%d", &completed_input);
+
+	//allocate memory for task completed
+	task.completed = calloc(1, 10);
+	if (task.completed == NULL)
+		perror("Task.Completed memory alloc failed");
+
 	//make task.completed yes or no
 	if (completed_input == 0)
 		task.completed = "No";
@@ -56,15 +61,18 @@ void add_task() {
 
 	//put input in file
 	fputs(task.description, fp);
-	fputs("Completed? ", fp);
+	fputs(". Completed? ", fp);
 	fputs(task.completed, fp);
 	fputs("\n", fp);
 	printf("The task has been added\n");
 
 	//free the memory and close the file
 	free(task.description);	
+	free(task.completed);
 	fclose(fp);
 }
+
+//function to show tasks
 void show_tasks(){
 	//open file
 	FILE *fp = fopen("tasks.txt", "r");
@@ -88,7 +96,7 @@ void show_tasks(){
 	fclose(fp);
 }
 
-//add function to delete task
+//function to delete a task
 void delete_task(){
 
 	//ask user which idea they want to delete
