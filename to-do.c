@@ -68,7 +68,6 @@ void add_task() {
 
 	//free the memory and close the file
 	free(task.description);	
-	free(task.completed);
 	fclose(fp);
 }
 
@@ -144,11 +143,43 @@ void delete_task(){
 	return;
 }
 
+//function to update task completion
+void update_task_completion(){
+	//show tasks first
+	show_tasks();
+
+	//pick a task
+	printf("\nWhich task do you want to update?\n");
+	int task_to_update;
+	scanf("%d", &task_to_update);
+	printf("Task to update: %d\n", task_to_update);
+	
+	//check current state of task.completed
+	FILE *fp = fopen("tasks.txt", "r");	
+	if (fp == NULL){
+		printf("Couldn't open file");
+		return;
+		}
+ 
+	//loop through list until you get to task number user input
+	int task_counter = 0;
+	char task_buffer[TASK_LENGTH];
+	while ((fgets(task_buffer, TASK_LENGTH, fp)) != NULL){
+		task_counter++;
+		if (task_counter == task_to_update)
+			printf("Task buffer: %s\n", task_buffer);
+	}
+}
+	//if no ask user if they want to change it to completed
+	
+	//if yes, do the opposite
+
+
 int main(void){
 	//tell user welcome to task manager and select a choice
 	printf("WELCOME TO THE TASK MANAGER!\n");
 	printf("Please select a choice.Press...\n");
-	printf("1 to show tasks\n2 to add a task\n3 to delete task\n\n");
+	printf("1 to show tasks\n2 to add a task\n3 to delete task\n4 to update  task completion\n\n");
 
 	//create buffer to store user input
 	char user_input[4];
@@ -164,5 +195,6 @@ int main(void){
 		case 1: show_tasks(); break;
 		case 2: add_task(); break;
 		case 3: delete_task(); break;
+		case 4: update_task_completion(); break;
 	}
 }
