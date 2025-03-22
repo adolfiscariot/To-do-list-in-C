@@ -10,17 +10,17 @@
 #define TOTAL_TASKS 10
 
 //the task struct
-typedef struct {
+struct Task{
 	char *description;
 	char *completed;
-} Task;
+};
 
 int task_counter = 0;
 
 //function to add a task
 void add_task() {
 	//create new task
-	Task task;
+	struct Task task;
 
 	//take in user input
 	printf("Input a task: ");
@@ -143,17 +143,23 @@ void delete_task(){
 	return;
 }
 
-//function to update task completion
-void update_task_completion(){
-	//show tasks first
-	show_tasks();
-
+//function to select a task
+int pick_a_task(){
 	//pick a task
 	printf("\nWhich task do you want to update?\n");
 	int task_to_update;
 	scanf("%d", &task_to_update);
-	printf("Task to update: %d\n", task_to_update);
-	
+	return task_to_update;
+}
+
+//function to update task completion
+void update_task_completion(struct Task *t){
+	//show tasks first
+	show_tasks();
+
+	//user inputs task to be updated
+	int task_to_update = pick_a_task();
+
 	//check current state of task.completed
 	FILE *fp = fopen("tasks.txt", "r");	
 	if (fp == NULL){
@@ -168,6 +174,7 @@ void update_task_completion(){
 		task_counter++;
 		if (task_counter == task_to_update)
 			printf("Task buffer: %s\n", task_buffer);
+			printf("%p\n", t);
 	}
 }
 	//if no ask user if they want to change it to completed
@@ -195,6 +202,6 @@ int main(void){
 		case 1: show_tasks(); break;
 		case 2: add_task(); break;
 		case 3: delete_task(); break;
-		case 4: update_task_completion(); break;
+		case 4: update_task_completion(t); break;
 	}
 }
