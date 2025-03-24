@@ -1,3 +1,7 @@
 Read a book. Completed? No
 Go to the salon. Completed? No
-xyz. Completed? No
+Study CSAPP. Completed? No
+play piano. Completed? No
+take a shit. Completed? No
+Go to work. Completed? No
+leave the house. Completed? No
