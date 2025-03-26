@@ -106,8 +106,10 @@ int pick_a_task(){
 void scroll(struct Task *task){
 	char read[TASK_LENGTH];
 	FILE *fp = fopen("tasks.txt", "r");
-	while((fgets(read, TASK_LENGTH, fp)) != NULL)
+	while((fgets(read, TASK_LENGTH, fp)) != NULL){
 		printf("%s\n", task->description);
+		printf("%s\n", read);
+	}
 }
 
 //function to delete a task
@@ -183,20 +185,19 @@ void update_task_completion(struct Task *task){
 	char task_buffer[TASK_LENGTH];
 	while ((fgets(task_buffer, TASK_LENGTH, fp)) != NULL){
 		task_counter++;
-		printf("%s\n", task->description);
 		if (task_counter == task_to_update){
-			printf("%s\n", task->description);
 			printf("Is it completed? 1 for yes, 0 for no...");
 			int answer;
 			scanf("%d", &answer);
-			fputs(task_buffer, fp2);
-			fputs(". Completed? " , fp2);
-			fputs(answer? "Yes" : "No", fp2);
-			fputs("\n", fp2);
+			
+			//FIX THIS!!!
+
+
 			printf("The task has been updated\n");
 
 		}
-		fputs(task_buffer, fp2);
+		else
+			fputs(task_buffer, fp2);
 	}
 }
 
@@ -224,6 +225,6 @@ int main(void){
 		case 2: add_task(&task); break;
 		case 3: delete_task(); break;
 		case 4: update_task_completion(&task); break;
-		case  5: scroll(&task); break;
+		case 5: scroll(&task); break;
 	}
 }
