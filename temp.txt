@@ -1,7 +1,0 @@
-Read a book. Completed? No
-Go to the salon. Completed? No
-Study CSAPP. Completed? No
-play piano. Completed? No
-take a shit. completed? Yes
-Go to work. Completed? No
-leave the house. Completed? No

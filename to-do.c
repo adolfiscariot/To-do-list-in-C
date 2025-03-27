@@ -191,7 +191,20 @@ void update_task_completion(struct Task *task){
 			scanf("%d", &answer);
 			
 			//FIX THIS!!!
+			//create task_description and task_status strings
+			char task_description[TASK_LENGTH];
+			char task_status[100];
 
+			//put struct in the above locations
+			sscanf(task_buffer, "%[^.]. Completed? %s\n", task_description, task_status);
+			//set task_status to yes or no
+			if (answer == 1)
+				strcpy(task_status, "Yes");
+			else
+				strcpy(task_status, "No");
+
+			//print into a file
+			fprintf(fp2, "%s. Completed? %s\n", task_description, task_status);
 
 			printf("The task has been updated\n");
 
@@ -199,6 +212,9 @@ void update_task_completion(struct Task *task){
 		else
 			fputs(task_buffer, fp2);
 	}
+	remove("tasks.txt");
+	rename("temp.txt", "tasks.txt");
+	show_tasks();
 }
 
 
