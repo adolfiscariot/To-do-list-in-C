@@ -3,5 +3,5 @@ Go to the salon. Completed? No
 Study CSAPP. Completed? Yes
 play piano. Completed? Yes
 take a shit. Completed? No
-Go to work. Completed? No
+Go to work. Completed? Yes
 leave the house. Completed? Yes

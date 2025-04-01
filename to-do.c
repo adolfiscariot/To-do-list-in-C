@@ -7,18 +7,35 @@
 #include <stdlib.h>
 
 #define TASK_LENGTH 100
-#define TOTAL_TASKS 10
+#define TOTAL_TASKS 5
 
 //the task struct
-struct Task{
+typedef struct{
 	char *description;
 	char *completed;
-};
+}Task;
+
+/*the dynamic array struct*/
+typedef struct{
+	Task *tasks; /*pointer to the tasks in the array*/
+	int capacity; /*max size of array*/
+	int size; /*how full the array is*/
+}TaskArray;
 
 int task_counter = 0;
 
+/*Function to initialize task array*/
+void initialize_array(TaskArray *array){
+	array->tasks = (Task *) calloc(TOTAL_TASKS, TASK_LENGTH);	
+	if (tasks == NULL){
+		perror("Mem alloc failed");
+		exit(1);
+	}
+	array->capacity = TOTAL_TASKS;
+	array->size = 0;
+
 //function to add a task
-void add_task(struct Task *task) {
+void add_task(Task *task, TaskArray *array) {
 	//take in user input
 	printf("Input a task: ");
 	char task_input[TASK_LENGTH];
@@ -50,6 +67,12 @@ void add_task(struct Task *task) {
 	else if (completed_input == 1)
 		task->completed = "Yes";
 	printf("Task completed is: %s\n", task->completed);
+
+	/*check if task array is full*/
+	if (array->size == array->capacity){
+		realloc(array->tasks, array->capacity * 2);
+	}
+	/*PICK UP FROM HERE!*/
 
 	//open file
 	FILE *fp = fopen("tasks.txt", "a");
@@ -103,16 +126,7 @@ int pick_a_task(){
 	return task_to_update;
 }
 
-void scroll(struct Task *task){
-	char read[TASK_LENGTH];
-	FILE *fp = fopen("tasks.txt", "r");
-	while((fgets(read, TASK_LENGTH, fp)) != NULL){
-		printf("%s\n", task->description);
-		printf("%s\n", read);
-	}
-}
-
-//function to delete a task
+function to delete a task
 void delete_task(){
 
 	//ask user which idea they want to delete
@@ -185,13 +199,13 @@ void update_task_completion(struct Task *task){
 	char task_buffer[TASK_LENGTH];
 	while ((fgets(task_buffer, TASK_LENGTH, fp)) != NULL){
 		task_counter++;
+		//update the task and store it in temp.txt
 		if (task_counter == task_to_update){
 			printf("Is it completed? 1 for yes, 0 for no...");
 			int answer;
 			scanf("%d", &answer);
 			
-			//FIX THIS!!!
-			//create task_description and task_status strings
+			//create strings to store the data
 			char task_description[TASK_LENGTH];
 			char task_status[100];
 
@@ -214,15 +228,14 @@ void update_task_completion(struct Task *task){
 	}
 	remove("tasks.txt");
 	rename("temp.txt", "tasks.txt");
-	show_tasks();
 }
 
-
+//main function
 int main(void){
 	//tell user welcome to task manager and select a choice
 	printf("WELCOME TO THE TASK MANAGER!\n");
 	printf("Please select a choice.Press...\n");
-	printf("1 to show tasks\n2 to add a task\n3 to delete task\n4 to update task completion\n5 to scroll\n\n");
+	printf("1 to show tasks\n2 to add a task\n3 to delete task\n4 to update task completion\n\n");
 
 	//create buffer to store user input
 	char user_input[4];
@@ -233,7 +246,7 @@ int main(void){
 	//convert string user input to an int
 	int converted_user_input = atoi(user_input);
 
-	struct Task task;
+	Task task;
 
 	//switch case for which choice they select
 	switch(converted_user_input){
@@ -241,6 +254,5 @@ int main(void){
 		case 2: add_task(&task); break;
 		case 3: delete_task(); break;
 		case 4: update_task_completion(&task); break;
-		case 5: scroll(&task); break;
 	}
 }
