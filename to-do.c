@@ -27,12 +27,33 @@ int task_counter = 0;
 /*Function to initialize task array*/
 void initialize_array(TaskArray *array){
 	array->tasks = (Task *) calloc(TOTAL_TASKS, TASK_LENGTH);	
-	if (tasks == NULL){
+	if (array->tasks == NULL){
 		perror("Mem alloc failed");
 		exit(1);
 	}
 	array->capacity = TOTAL_TASKS;
 	array->size = 0;
+	
+/*Function to push task onto array*/
+void push(TaskArray *array, Task value){
+	if (array->size >= array->capacity){
+		/*create a new capacity and a new array*/
+		int new_capacity = array->capacity * 2;
+		Task *new_array = (Task *)  realloc(array->tasks, (new_capacity * sizeof(Task)));
+		if (new_array == NULL){
+			perror("Mem alloc failed\n");
+			exit(1);
+		}
+		/*Reassign array task to new array*/
+		array->tasks = new_array;
+		array->capacity = new_capacity;
+	}	
+	/*insert element in next open position*/
+	array->tasks[array->size] = value;
+	/*Add size by 1*/	
+	array->size++;
+}
+
 
 //function to add a task
 void add_task(Task *task, TaskArray *array) {
@@ -46,8 +67,10 @@ void add_task(Task *task, TaskArray *array) {
 
 	//copy task_input into task.description
 	task->description = calloc(1, TASK_LENGTH);
-	if(task->description==NULL)
+	if(task->description==NULL){
 		perror("Task.Description memory alloc failed");	
+		exit(1);
+	}
        	strcpy(task->description, task_input);
 	printf("Task description is: %s\n", task->description);
 	
@@ -55,24 +78,24 @@ void add_task(Task *task, TaskArray *array) {
 	printf("Is it completed? 1 for yes, 0 for no...");
 	int completed_input;
 	scanf("%d", &completed_input);
+	getchar();
 
 	//allocate memory for task completed
-	task->completed = calloc(1, 10);
-	if (task->completed == NULL)
+	task->completed = calloc(1, 4);
+	if (task->completed == NULL){
 		perror("Task.Completed memory alloc failed");
+		exit(1);
+	}
 
 	//make task.completed yes or no
 	if (completed_input == 0)
-		task->completed = "No";
+		strcpy(task->completed, "No");
 	else if (completed_input == 1)
-		task->completed = "Yes";
+		strcpy(task->completed, "Yes");
 	printf("Task completed is: %s\n", task->completed);
 
-	/*check if task array is full*/
-	if (array->size == array->capacity){
-		realloc(array->tasks, array->capacity * 2);
-	}
-	/*PICK UP FROM HERE!*/
+	/*push to array whatever is in the task*/
+	push(array, *task);
 
 	//open file
 	FILE *fp = fopen("tasks.txt", "a");
