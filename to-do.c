@@ -33,6 +33,7 @@ void initialize_array(TaskArray *array){
 	}
 	array->capacity = TOTAL_TASKS;
 	array->size = 0;
+}
 	
 /*Function to push task onto array*/
 void push(TaskArray *array, Task value){
@@ -53,7 +54,6 @@ void push(TaskArray *array, Task value){
 	/*Add size by 1*/	
 	array->size++;
 }
-
 
 //function to add a task
 void add_task(Task *task, TaskArray *array) {
@@ -97,47 +97,14 @@ void add_task(Task *task, TaskArray *array) {
 	/*push to array whatever is in the task*/
 	push(array, *task);
 
-	//open file
-	FILE *fp = fopen("tasks.txt", "a");
-	if (fp==NULL){
-		perror("Issue opening file");
-		return;
-	}
-
-	//put input in file
-	fputs(task->description, fp);
-	fputs(". Completed? ", fp);
-	fputs(task->completed, fp);
-	fputs("\n", fp);
-	printf("The task has been added\n");
-
-
-	//close the file
-	fclose(fp);
 }
 
 //function to show tasks
-void show_tasks(){
-	//open file
-	FILE *fp = fopen("tasks.txt", "r");
+void show_tasks(TaskArray *array){
+	/**/
+	for (int i = 0; i < array->size; i++)
+		printf("%s. %s\n", array->tasks[i].description, array->tasks[i].completed);
 
-	//if fille is null throw error
-	if(fp == NULL){
-		perror("Couldn't open file");
-		return;
-	}
-
-	//create buffer to store fetched tasks
-	char *fetched_tasks = calloc(TOTAL_TASKS, TASK_LENGTH);
-
-	//while fgets != NULL print tasks
-	printf("-----TASK MANAGER-----\n");
-	while ((fgets(fetched_tasks, TASK_LENGTH, fp)) != NULL)
-		printf("%d: %s", ++task_counter, fetched_tasks);
-
-	//free memory and close file
-	free(fetched_tasks);
-	fclose(fp);
 }
 
 //function to select a task
@@ -149,7 +116,7 @@ int pick_a_task(){
 	return task_to_update;
 }
 
-function to delete a task
+/*function to delete a task*/
 void delete_task(){
 
 	//ask user which idea they want to delete
@@ -196,9 +163,9 @@ void delete_task(){
 
 
 //function to update task completion
-void update_task_completion(struct Task *task){
+void update_task_completion(TaskArray *array, Task *task){
 	//show tasks first
-	show_tasks();
+	show_tasks(array);
 
 	//user inputs task to be updated
 	int task_to_update = pick_a_task();
@@ -269,13 +236,15 @@ int main(void){
 	//convert string user input to an int
 	int converted_user_input = atoi(user_input);
 
+	TaskArray *array;
 	Task task;
+	initialize_array(array);
 
 	//switch case for which choice they select
 	switch(converted_user_input){
-		case 1: show_tasks(); break;
-		case 2: add_task(&task); break;
+		case 1: show_tasks(array); break;
+		case 2: add_task(&task, array); break;
 		case 3: delete_task(); break;
-		case 4: update_task_completion(&task); break;
+		case 4: update_task_completion(array, &task); break;
 	}
 }
