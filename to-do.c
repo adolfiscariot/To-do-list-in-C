@@ -1,6 +1,6 @@
 //This is my very first C project. It's a simple to do list. It is currently March 4th 2025 at 5:54 am. 
 
-//Create a to do list where user can view, add and delete tasks. Tasks should be stored in a file called tasks.txt
+//Create a to do list where user can view, add, update and delete tasks. Tasks should be stored in a file called tasks.txt
 
 #include <string.h>
 #include <stdio.h>
@@ -214,10 +214,6 @@ void update_task_completion(){
 	remove("tasks.txt");
 	rename("temp.txt", "tasks.txt");
 }
-	//if no ask user if they want to change it to completed
-	
-	//if yes, do the opposite
-
 
 int main(void){
 	//tell user welcome to task manager and select a choice
