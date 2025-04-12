@@ -153,7 +153,7 @@ int pick_a_task(){
 }
 
 //function to update task completion
-void update_task_completion(struct Task *t){
+void update_task_completion(){
 	//show tasks first
 	show_tasks();
 
@@ -167,15 +167,52 @@ void update_task_completion(struct Task *t){
 		return;
 		}
  
+	FILE *fp2 = fopen("temp.txt", "w");	
+	if (fp2 == NULL){
+		printf("Couldn't open file");
+		return;
+		}
+
 	//loop through list until you get to task number user input
 	int task_counter = 0;
 	char task_buffer[TASK_LENGTH];
+
+	/*while task isn't the one you want just add it to temp.txt*/
 	while ((fgets(task_buffer, TASK_LENGTH, fp)) != NULL){
 		task_counter++;
-		if (task_counter == task_to_update)
+
+		/*if you land on the task you want...*/
+		if (task_counter == task_to_update){
 			printf("Task buffer: %s\n", task_buffer);
-			printf("%p\n", t);
+		
+			/*put task in description from start to .*/
+			char task_description[TASK_LENGTH];
+			sscanf(task_buffer, "%[^.]", task_description);
+
+			printf("Is the task completed? 1 for yes, 0 for no\n");
+			int completed_input;
+			scanf("%d", &completed_input);
+
+			/*turn completed input to yes/no*/
+			char task_completed[TASK_LENGTH];
+			if (completed_input == 0)
+				strcpy(task_completed, "No\n");
+			else if (completed_input == 1)
+				strcpy(task_completed, "Yes\n");
+
+			/*add task completed and description to temp.txt*/
+			fputs(task_description, fp2);
+			fputs(". ", fp2);
+			fputs(task_completed, fp2);
+
+			printf("Task updated\n");
+		}
+		else {
+			fputs(task_buffer, fp2);
+		}
 	}
+	remove("tasks.txt");
+	rename("temp.txt", "tasks.txt");
 }
 	//if no ask user if they want to change it to completed
 	
@@ -202,6 +239,6 @@ int main(void){
 		case 1: show_tasks(); break;
 		case 2: add_task(); break;
 		case 3: delete_task(); break;
-		case 4: update_task_completion(t); break;
+		case 4: update_task_completion(); break;
 	}
 }

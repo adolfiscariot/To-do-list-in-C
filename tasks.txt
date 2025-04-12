@@ -1,3 +1,3 @@
 Read a book. Completed? No
-Go to the salon. Completed? No
-xyz. Completed? No
+Go to the salon. Yes
+xyz. Yes
